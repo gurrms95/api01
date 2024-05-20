@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,10 +43,12 @@ public class CustomSecurityConfig {
         log.info("------------------Configure-------------------");
 
         //CSRF 토큰 비활성화
-        http.csrf().disable();
+//        http.csrf().disable();
+        http.csrf(AbstractHttpConfigurer::disable);
         //세션을 사용하지 않음
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.sessionManagement((sessionManagement)->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
 }
