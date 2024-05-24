@@ -20,6 +20,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.zerock.api01.security.APIUserDetailService;
 import org.zerock.api01.security.filter.APILoginFilter;
+import org.zerock.api01.security.handler.APILoginSuccessHandler;
+import org.zerock.api01.util.JWTUtil;
 
 @Configuration
 @Log4j2
@@ -29,6 +31,8 @@ import org.zerock.api01.security.filter.APILoginFilter;
 public class CustomSecurityConfig {
     
     private final APIUserDetailService apiUserDetailService;
+
+    private final JWTUtil jwtUtil;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -67,6 +71,11 @@ public class CustomSecurityConfig {
         //APILoginFilter
         APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
         apiLoginFilter.setAuthenticationManager(authenticationManager);
+
+        //APILoginSuccessHandler
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
+        //SuccessHandler 세팅
+        apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
         
         //APILoginFilter의 위치조정
         http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
